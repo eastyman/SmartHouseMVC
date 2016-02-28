@@ -1,0 +1,48 @@
+﻿@{
+    Layout = null;
+}
+
+@{
+    ViewBag.Title = "Новое устройство";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create</title>
+    <style>
+        .mac {
+            display: inline-block;
+            border: 1px solid black;
+            margin: 3px;
+            padding: 3px;
+            border-radius: 20px;
+            padding: 5px 8px;
+            color: #333;
+            background: #E6E6FA;
+            box-shadow: inset 0 2px 0 rgba(0,0,0,.2), 0 0 4px rgba(0,0,0,0.1);
+        }
+    </style>
+
+</head>
+<body bgcolor="#F5FFFA">
+    <div class="mac">
+        @using (Html.BeginForm("Create", "Device"))
+        {
+            <br />
+            <span class="mac">Устройство:</span>
+            @Html.DropDownList("deviceType", (IEnumerable<SelectListItem>)ViewBag.dropDownDeviceList)
+            <br />
+            <span>Имя устройства:</span>
+            @Html.TextBox("deviceName")
+            <label style="color:red">@ViewBag.ErrorNoname</label>
+            <label style="color:red">@ViewBag.ErrorContains</label>
+            <br />
+            <input type="submit" value="Добавить" class="mac">
+
+        }
+    </div>
+</body>
+</html>

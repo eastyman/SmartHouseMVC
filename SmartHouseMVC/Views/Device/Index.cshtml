@@ -1,0 +1,74 @@
+﻿@{
+    Layout = null;
+}
+@using CoolHouse;
+@model IDictionary<string, Device>
+@{
+    ViewBag.Title = "Умный дом";
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Умный дом</title>
+    <style>
+        .mac {
+            display: inline-block;
+            border: 1px solid black;
+            margin: 3px;
+            padding: 3px;
+            border-radius: 20px;
+            padding: 5px 8px;
+            color: #333;
+            background: #E6E6FA;
+            text-decoration: none;
+            box-shadow: inset 0 2px 0 rgba(0,0,0,.2), 0 0 4px rgba(0,0,0,0.1);
+        }
+    </style>
+
+</head>
+<body bgcolor="#F5FFFA">
+    <div>
+        <div>
+            @Html.ActionLink("Добавить устройство в дом", "Create", "Device", new { @class = "mac" })
+        </div>
+
+        @foreach (var item in Model)
+        {
+            <div class="mac">
+                @item.Value.ToString()<br />
+                <a href="/Device/On?name=@item.Key" class="mac">Вкл</a>
+                <a href="/Device/Off?name=@item.Key" class="mac">Выкл</a>
+                <br />
+
+                @if (item.Value is TVSet)
+                {
+                    <a href="~/Device/PrevChannel?name=@item.Key" class="mac">Пред.канал</a>
+                    <a href="~/Device/NextChannel?name=@item.Key" class="mac">След.канал</a>
+                    <br />
+                    using (Html.BeginForm("Connect", "Device"))
+                    {
+                        @Html.Hidden("name", @item.Key)
+                        @Html.DropDownList("sourceBox", (IEnumerable<SelectListItem>)ViewBag.sourceList)
+                        <input type="submit" value="Подключить" class="mac">
+                        <a href="~/Device/Disconnect?name=@item.Key" class="mac">Отключить</a>
+                    }
+                    <br />
+                }
+                @if (item.Value is TempereaturedDevice)
+                {
+                    <a href="~/Device/OpenDoor?name=@item.Key" class="mac">Открыть</a>
+                    <a href="~/Device/CloseDoor?name=@item.Key" class="mac">Закрыть</a>
+                    <br />
+                    <a href="~/Device/DownTemp?name=@item.Key" class="mac">Уменьшить температуру</a>
+                    <a href="~/Device/UpTemp?name=@item.Key" class="mac">Увеличить температуру</a>
+                    <br />
+                }
+                <a href="/Device/Delete?name=@item.Key" class="mac">Удалить</a><br />
+            </div>
+        }
+
+    </div>
+</body>
+</html>
