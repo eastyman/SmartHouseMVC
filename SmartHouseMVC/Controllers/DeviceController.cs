@@ -105,7 +105,6 @@ namespace SmartHouseMVC.Controllers
                 }
 
                 deviceList.Add(deviceName, newDevice);
-                Session["Devices"] = deviceList;
                 return RedirectToAction("Index");
             }
 
@@ -114,35 +113,30 @@ namespace SmartHouseMVC.Controllers
         public ActionResult Delete(string name)
         {
             deviceList.Remove(name);
-            Session["Devices"] = deviceList;
             return RedirectToAction("Index");
         }
 
         public ActionResult On(string name)
         {
             deviceList[name].On();
-            Session["Devices"] = deviceList;
             return RedirectToAction("Index");
         }
 
         public ActionResult Off(string name)
         {
             deviceList[name].Off();
-            Session["Devices"] = deviceList;
             return RedirectToAction("Index");
         }
 
         public ActionResult PrevChannel(string name)
         {
             ((TVSet)deviceList[name]).prevChannel();
-            Session["Devices"] = deviceList;
             return RedirectToAction("Index");
         }
 
         public ActionResult NextChannel(string name)
         {
             ((TVSet)deviceList[name]).nextChannel();
-            Session["Devices"] = deviceList;
             return RedirectToAction("Index");
         }
 
@@ -157,28 +151,24 @@ namespace SmartHouseMVC.Controllers
             {
                 ((TVSet)deviceList[name]).SignalSource = (ITVsourced)source;
             }
-            Session["Devices"] = deviceList;
             return RedirectToAction("Index");
         }
 
         public ActionResult Disconnect(string name)
         {
             ((TVSet)deviceList[name]).SignalSource = null;
-            Session["Devices"] = deviceList;
             return RedirectToAction("Index");
         }
 
         public ActionResult OpenDoor(string name)
         {
             ((TempereaturedDevice)deviceList[name]).OpenDoor();
-            Session["Devices"] = deviceList;
             return RedirectToAction("Index");
         }
 
         public ActionResult CloseDoor(string name)
         {
             ((TempereaturedDevice)deviceList[name]).CloseDoor();
-            Session["Devices"] = deviceList;
             return RedirectToAction("Index");
         }
 
@@ -192,7 +182,6 @@ namespace SmartHouseMVC.Controllers
             {
                 ((TempereaturedDevice)deviceList[name]).lowTemperature(10);
             }
-            Session["Devices"] = deviceList;
             return RedirectToAction("Index");
         }
 
@@ -207,7 +196,6 @@ namespace SmartHouseMVC.Controllers
                 ((TempereaturedDevice)deviceList[name]).highTemperature(10);
             }
             
-            Session["Devices"] = deviceList;
             return RedirectToAction("Index");
         }
     }
