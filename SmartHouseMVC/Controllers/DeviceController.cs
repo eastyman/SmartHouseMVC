@@ -53,9 +53,7 @@ namespace SmartHouseMVC.Controllers
             return View();
         }
 
-        // POST: Device/Create
-        [HttpPost]
-        public ActionResult Create(string deviceType, string deviceName)
+        private SelectListItem[] CreateDevList()
         {
             SelectListItem[] dropDownDeviceList = new SelectListItem[6];
             dropDownDeviceList[0] = new SelectListItem { Text = "Холодильник", Value = "fridge", Selected = true };
@@ -64,17 +62,23 @@ namespace SmartHouseMVC.Controllers
             dropDownDeviceList[3] = new SelectListItem { Text = "Духовка", Value = "oven" };
             dropDownDeviceList[4] = new SelectListItem { Text = "Спутниковый тюнер", Value = "satellite" };
             dropDownDeviceList[5] = new SelectListItem { Text = "Приставка", Value = "gamebox" };
+            return dropDownDeviceList;
+        }
 
-            ViewBag.dropDownDeviceList = dropDownDeviceList;
-           
+        // POST: Device/Create
+        [HttpPost]
+        public ActionResult Create(string deviceType, string deviceName)
+        {     
             if (deviceName == "")
             {
                 ViewBag.ErrorNoname = "Имя устройства необходимо заполнить";
+                ViewBag.dropDownDeviceList = CreateDevList();
                 return View();
             }
             else if (deviceList.ContainsKey(deviceName))
             {
                 ViewBag.ErrorContains = "Устройство с таким именем уже существует!";
+                ViewBag.dropDownDeviceList = CreateDevList();
                 return View();
             }
             else
