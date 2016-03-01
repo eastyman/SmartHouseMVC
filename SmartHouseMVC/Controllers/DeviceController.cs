@@ -25,8 +25,7 @@ namespace SmartHouseMVC.Controllers
         // GET: Device
         public ActionResult Index()
         {    
-            ViewBag.deviceList = deviceList;
-            List<string> sources = new List<string>(); 
+              List<string> sources = new List<string>(); 
               var res =
                        from t in deviceList
                        where t.Value is ITVsourced
