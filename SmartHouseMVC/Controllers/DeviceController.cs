@@ -9,20 +9,22 @@ namespace SmartHouseMVC.Controllers
 {
     public class DeviceController : Controller
     {
-        // GET: Device
-        public ActionResult Index()
-        {   
-            IDictionary<string, Device> deviceList;
-            if (Session["Devices"] == null)
+        public IDictionary<string, Device> deviceList;
+        public DeviceController()
+        {
+            if (System.Web.HttpContext.Current.Session["Devices"] == null)
             {
                 deviceList = new Dictionary<string, Device>();
-                Session["Devices"] = deviceList;
+                System.Web.HttpContext.Current.Session["Devices"] = deviceList;
             }
             else
             {
-                deviceList = (Dictionary<string, Device>)Session["Devices"];
+                deviceList = (Dictionary<string, Device>)System.Web.HttpContext.Current.Session["Devices"];
             }
-
+        }        
+        // GET: Device
+        public ActionResult Index()
+        {    
             ViewBag.deviceList = deviceList;
             List<string> sources = new List<string>(); 
               var res =
@@ -65,8 +67,7 @@ namespace SmartHouseMVC.Controllers
             dropDownDeviceList[5] = new SelectListItem { Text = "Приставка", Value = "gamebox" };
 
             ViewBag.dropDownDeviceList = dropDownDeviceList;
-
-            IDictionary<string, Device> deviceList = (Dictionary<string, Device>)Session["Devices"];
+           
             if (deviceName == "")
             {
                 ViewBag.ErrorNoname = "Имя устройства необходимо заполнить";
@@ -113,7 +114,6 @@ namespace SmartHouseMVC.Controllers
         
         public ActionResult Delete(string name)
         {
-            IDictionary<string, Device> deviceList = (Dictionary<string, Device>)Session["Devices"];
             deviceList.Remove(name);
             Session["Devices"] = deviceList;
             return RedirectToAction("Index");
@@ -121,7 +121,6 @@ namespace SmartHouseMVC.Controllers
 
         public ActionResult On(string name)
         {
-            IDictionary<string, Device> deviceList = (Dictionary<string, Device>)Session["Devices"];
             deviceList[name].On();
             Session["Devices"] = deviceList;
             return RedirectToAction("Index");
@@ -129,7 +128,6 @@ namespace SmartHouseMVC.Controllers
 
         public ActionResult Off(string name)
         {
-            IDictionary<string, Device> deviceList = (Dictionary<string, Device>)Session["Devices"];
             deviceList[name].Off();
             Session["Devices"] = deviceList;
             return RedirectToAction("Index");
@@ -137,7 +135,6 @@ namespace SmartHouseMVC.Controllers
 
         public ActionResult PrevChannel(string name)
         {
-            IDictionary<string, Device> deviceList = (Dictionary<string, Device>)Session["Devices"];
             ((TVSet)deviceList[name]).prevChannel();
             Session["Devices"] = deviceList;
             return RedirectToAction("Index");
@@ -145,7 +142,6 @@ namespace SmartHouseMVC.Controllers
 
         public ActionResult NextChannel(string name)
         {
-            IDictionary<string, Device> deviceList = (Dictionary<string, Device>)Session["Devices"];
             ((TVSet)deviceList[name]).nextChannel();
             Session["Devices"] = deviceList;
             return RedirectToAction("Index");
@@ -154,8 +150,6 @@ namespace SmartHouseMVC.Controllers
         [HttpPost]
         public ActionResult Connect(string name, string sourceBox)
         {
-            IDictionary<string, Device> deviceList = (Dictionary<string, Device>)Session["Devices"];
-
             var res =
                      from t in deviceList
                      where t.Value.name == sourceBox.ToString()
@@ -170,7 +164,6 @@ namespace SmartHouseMVC.Controllers
 
         public ActionResult Disconnect(string name)
         {
-            IDictionary<string, Device> deviceList = (Dictionary<string, Device>)Session["Devices"];
             ((TVSet)deviceList[name]).SignalSource = null;
             Session["Devices"] = deviceList;
             return RedirectToAction("Index");
@@ -178,7 +171,6 @@ namespace SmartHouseMVC.Controllers
 
         public ActionResult OpenDoor(string name)
         {
-            IDictionary<string, Device> deviceList = (Dictionary<string, Device>)Session["Devices"];
             ((TempereaturedDevice)deviceList[name]).OpenDoor();
             Session["Devices"] = deviceList;
             return RedirectToAction("Index");
@@ -186,7 +178,6 @@ namespace SmartHouseMVC.Controllers
 
         public ActionResult CloseDoor(string name)
         {
-            IDictionary<string, Device> deviceList = (Dictionary<string, Device>)Session["Devices"];
             ((TempereaturedDevice)deviceList[name]).CloseDoor();
             Session["Devices"] = deviceList;
             return RedirectToAction("Index");
@@ -194,7 +185,6 @@ namespace SmartHouseMVC.Controllers
 
         public ActionResult DownTemp(string name)
         {
-            IDictionary<string, Device> deviceList = (Dictionary<string, Device>)Session["Devices"];
             if (deviceList[name] is Fringe)
             {
                 ((TempereaturedDevice)deviceList[name]).lowTemperature(1);
@@ -209,7 +199,6 @@ namespace SmartHouseMVC.Controllers
 
         public ActionResult UpTemp(string name)
         {
-            IDictionary<string, Device> deviceList = (Dictionary<string, Device>)Session["Devices"];
             if (deviceList[name] is Fringe)
             {
                 ((TempereaturedDevice)deviceList[name]).highTemperature(1);
