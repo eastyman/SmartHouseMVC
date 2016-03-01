@@ -38,18 +38,7 @@ namespace SmartHouseMVC.Controllers
             ViewBag.sourceList = sourceList;
             return View(deviceList);
         }
-
-        private SelectListItem[] CreateDevList()
-        {
-            SelectListItem[] dropDownDeviceList = new SelectListItem[6];
-            dropDownDeviceList[0] = new SelectListItem { Text = "Холодильник", Value = "fridge", Selected = true };
-            dropDownDeviceList[1] = new SelectListItem { Text = "Телевизор", Value = "tv" };
-            dropDownDeviceList[2] = new SelectListItem { Text = "Микрофолновка", Value = "mw" };
-            dropDownDeviceList[3] = new SelectListItem { Text = "Духовка", Value = "oven" };
-            dropDownDeviceList[4] = new SelectListItem { Text = "Спутниковый тюнер", Value = "satellite" };
-            dropDownDeviceList[5] = new SelectListItem { Text = "Приставка", Value = "gamebox" };
-            return dropDownDeviceList;
-        }
+      
 
         // GET: Device/Create
         public ActionResult Create()
@@ -105,6 +94,18 @@ namespace SmartHouseMVC.Controllers
                 return RedirectToAction("Index");
             }
 
+        }
+
+        private SelectListItem[] CreateDevList()
+        {
+            SelectListItem[] dropDownDeviceList = new SelectListItem[6];
+            dropDownDeviceList[0] = new SelectListItem { Text = "Холодильник", Value = "fridge", Selected = true };
+            dropDownDeviceList[1] = new SelectListItem { Text = "Телевизор", Value = "tv" };
+            dropDownDeviceList[2] = new SelectListItem { Text = "Микрофолновка", Value = "mw" };
+            dropDownDeviceList[3] = new SelectListItem { Text = "Духовка", Value = "oven" };
+            dropDownDeviceList[4] = new SelectListItem { Text = "Спутниковый тюнер", Value = "satellite" };
+            dropDownDeviceList[5] = new SelectListItem { Text = "Приставка", Value = "gamebox" };
+            return dropDownDeviceList;
         }
         
         public ActionResult Delete(string name)
