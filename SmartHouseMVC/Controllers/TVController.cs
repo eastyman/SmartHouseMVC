@@ -56,8 +56,7 @@ namespace SmartHouseMVC.Controllers
 
         [Route("api/TV/{name}")]
         public void Delete(string name)
-        {
-            IDictionary<string, Device> deviceList = (Dictionary<string, Device>)System.Web.HttpContext.Current.Session["Devices"];
+        {           
             deviceList.Remove(name);
         }
     }

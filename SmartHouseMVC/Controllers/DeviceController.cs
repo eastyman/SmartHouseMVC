@@ -9,7 +9,7 @@ namespace SmartHouseMVC.Controllers
 {
     public class DeviceController : Controller
     {
-        public IDictionary<string, Device> deviceList;       
+        public IDictionary<string, Device> deviceList;          
         public DeviceController()
         {
             if (System.Web.HttpContext.Current.Session["Devices"] == null)
