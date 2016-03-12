@@ -12,6 +12,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Умный дом</title>
+    <script src="~/Scripts/jquery-2.2.1.js"></script>
     <style>
         .mac {
             display: inline-block;
@@ -36,39 +37,119 @@
 
         @foreach (var item in Model)
         {
-            <div class="mac">
-                @item.Value.ToString()<br />
-                <a href="/Device/On?name=@item.Key" class="mac">Вкл</a>
-                <a href="/Device/Off?name=@item.Key" class="mac">Выкл</a>
-                <br />
-
+                <div id="@item.Key-div" class="mac">
+                <span id="@item.Key-res">@item.Value.ToString()</span><br />
                 @if (item.Value is TVSet)
                 {
-                    <a href="~/Device/PrevChannel?name=@item.Key" class="mac">Пред.канал</a>
-                    <a href="~/Device/NextChannel?name=@item.Key" class="mac">След.канал</a>
+                    @Html.Hidden(@item.Key + "-name", @item.Key)                   
+                    <button class ="mac" type="button" id="@item.Key-on">Вкл</button>
+                    <button class="mac" type="button" id="@item.Key-off">Выкл</button>
+                    <br/>
+                    <button class="mac"  type="button" id="@item.Key-prevch">Пред.канал</button>
+                    <button class="mac" type="button" id="@item.Key-nextch">След.канал</button>
                     <br />
-                    using (Html.BeginForm("Connect", "Device"))
-                    {
-                        @Html.Hidden("name", @item.Key)
-                        @Html.DropDownList("sourceBox", (IEnumerable<SelectListItem>)ViewBag.sourceList)
-                        <input type="submit" value="Подключить" class="mac">
-                        <a href="~/Device/Disconnect?name=@item.Key" class="mac">Отключить</a>
-                    }
+                    @Html.DropDownList(@item.Key+"-sourceBox", (IEnumerable<SelectListItem>)ViewBag.sourceList)
+                    <button class="mac" id="@item.Key-connect">Подключить</button>
+                    <button class="mac" id="@item.Key-disconnect">Отключить</button>
                     <br />
+                    <button class="mac" type="button" id="@item.Key-del">Удалить</button>
+                    <br/>
+                    <label><b><i>Этот элемент управляется при помощи AJAX и WebAPI!</i></b></label>       
+                    <script>
+                        $("#@item.Key-on").click(function () {                           
+                            $.ajax({
+                                url: "/api/TV/on/" + $("#@item.Key-name").val(),
+                                type: "PUT",
+                                success: function (data) {                                    
+                                    $("#@item.Key-res").html(data);
+                                }
+                            });
+                        });
+
+                        $("#@item.Key-off").click(function () {                            
+                            $.ajax({
+                                url: "/api/TV/off/" + $("#@item.Key-name").val(),
+                                type: "PUT",
+                                success: function (data) {                                    
+                                    $("#@item.Key-res").html(data);
+                                }
+                            });
+                        });
+
+                        $("#@item.Key-prevch").click(function () {                                                   
+                            $.ajax({
+                                url: "/api/TV/prevch/" + $("#@item.Key-name").val(),
+                                type: "PUT",
+                                success: function (data) {                                    
+                                    $("#@item.Key-res").html(data);
+                                }
+                            });
+                        });
+
+                        $("#@item.Key-nextch").click(function () {                           
+                            $.ajax({
+                                url: "/api/TV/nextch/" + $("#@item.Key-name").val(),
+                                type: "PUT",
+                                success: function (data) {                                    
+                                    $("#@item.Key-res").html(data);
+                                }
+                            });
+                        });
+
+                        $("#@item.Key-connect").click(function () {                            
+                            $.ajax({
+                                url: "/api/TV/connect/" + $("#@item.Key-name").val() +"/"+ $("#@item.Key-sourceBox").val(),
+                                type: "PUT",
+                                success: function (data) {
+                                    $("#@item.Key-res").html(data);
+                                }
+                            });
+                        });
+
+                        $("#@item.Key-disconnect").click(function () {
+                            $.ajax({
+                                url: "/api/TV/disconnect/" + $("#@item.Key-name").val(),
+                                type: "PUT",
+                                success: function (data) {
+                                    $("#@item.Key-res").html(data);
+                                }
+                            });
+                        });
+
+                        $("#@item.Key-del").click(function () {
+                            $.ajax({
+                                url: "/api/TV/" + $("#@item.Key-name").val(),
+                                type: "DELETE",
+                                success: function (data) {                                   
+                                    $("#@item.Key-div").remove();
+                                }
+                            });
+                        });
+                    </script>
+
                 }
-                @if (item.Value is TempereaturedDevice)
+                else if (item.Value is TempereaturedDevice)
                 {
+                    <a href="/Device/On?name=@item.Key" class="mac">Вкл</a>
+                    <a href="/Device/Off?name=@item.Key" class="mac">Выкл</a>
+                    <br/>
                     <a href="~/Device/OpenDoor?name=@item.Key" class="mac">Открыть</a>
                     <a href="~/Device/CloseDoor?name=@item.Key" class="mac">Закрыть</a>
                     <br />
                     <a href="~/Device/DownTemp?name=@item.Key" class="mac">Уменьшить температуру</a>
                     <a href="~/Device/UpTemp?name=@item.Key" class="mac">Увеличить температуру</a>
                     <br />
+                    <a href="/Device/Delete?name=@item.Key" class="mac">Удалить</a><br />
                 }
-                <a href="/Device/Delete?name=@item.Key" class="mac">Удалить</a><br />
+                else
+                {
+                    <a href="/Device/On?name=@item.Key" class="mac">Вкл</a>
+                    <a href="/Device/Off?name=@item.Key" class="mac">Выкл</a>
+                    <br />
+                    <a href="/Device/Delete?name=@item.Key" class="mac">Удалить</a><br />
+                }                
             </div>
-        }
-
+        }      
     </div>
 </body>
 </html>

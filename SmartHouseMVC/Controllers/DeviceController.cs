@@ -9,17 +9,19 @@ namespace SmartHouseMVC.Controllers
 {
     public class DeviceController : Controller
     {
-        public IDictionary<string, Device> deviceList;
+        public IDictionary<string, Device> deviceList;       
         public DeviceController()
         {
             if (System.Web.HttpContext.Current.Session["Devices"] == null)
             {
                 deviceList = new Dictionary<string, Device>();
                 System.Web.HttpContext.Current.Session["Devices"] = deviceList;
+                System.Web.HttpContext.Current.Session["NextId"] = 0;
+            
             }
             else
             {
-                deviceList = (Dictionary<string, Device>)System.Web.HttpContext.Current.Session["Devices"];
+                deviceList = (Dictionary<string, Device>)System.Web.HttpContext.Current.Session["Devices"];               
             }
         }        
         // GET: Device
@@ -50,14 +52,27 @@ namespace SmartHouseMVC.Controllers
         // POST: Device/Create
         [HttpPost]
         public ActionResult Create(string deviceType, string deviceName)
-        {     
+        {
+
+            var res =
+             from t in deviceList
+             where t.Value.name == deviceName
+             select t.Value;
+
+            int count = 0;
+            foreach (var source in res)
+            {
+                count++;
+            } 
             if (deviceName == "")
             {
                 ViewBag.ErrorNoname = "Имя устройства необходимо заполнить";
                 ViewBag.dropDownDeviceList = CreateDevList();
                 return View();
             }
-            else if (deviceList.ContainsKey(deviceName))
+                
+            
+            else if (count>0)
             {
                 ViewBag.ErrorContains = "Устройство с таким именем уже существует!";
                 ViewBag.dropDownDeviceList = CreateDevList();
@@ -89,8 +104,11 @@ namespace SmartHouseMVC.Controllers
                         newDevice = new GameBox(deviceName);
                         break;
                 }
-
-                deviceList.Add(deviceName, newDevice);
+                int devCount = (int)System.Web.HttpContext.Current.Session["NextId"];
+                string key = "dev" + devCount.ToString();              
+                deviceList.Add(key, newDevice);
+                devCount++;
+                System.Web.HttpContext.Current.Session["NextId"] = devCount;
                 return RedirectToAction("Index");
             }
 
@@ -100,7 +118,7 @@ namespace SmartHouseMVC.Controllers
         {
             SelectListItem[] dropDownDeviceList = new SelectListItem[6];
             dropDownDeviceList[0] = new SelectListItem { Text = "Холодильник", Value = "fridge", Selected = true };
-            dropDownDeviceList[1] = new SelectListItem { Text = "Телевизор", Value = "tv" };
+            dropDownDeviceList[1] = new SelectListItem { Text = "Телевизор (WebAPI)", Value = "tv" };
             dropDownDeviceList[2] = new SelectListItem { Text = "Микрофолновка", Value = "mw" };
             dropDownDeviceList[3] = new SelectListItem { Text = "Духовка", Value = "oven" };
             dropDownDeviceList[4] = new SelectListItem { Text = "Спутниковый тюнер", Value = "satellite" };

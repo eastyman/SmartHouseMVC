@@ -9,7 +9,7 @@ namespace CoolHouse
     {
         public ITVsourced SignalSource { get; set; }  //Свойство для инъекции зависимости (подключение к телевизору внешнего устройства)
         public int currChannel;
-        public readonly int channelsCount;
+        public  int channelsCount;
         public TVSet(string devname, int currCh, int chCount)
             : base(devname)
         {
